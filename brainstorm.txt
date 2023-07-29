@@ -1,0 +1,16 @@
+
+Stacking tank arena game
+
+defeated tanks become pickups which go onto your head
+
+getting defeated with one or more stacked tanks causes you to take control of second tank up from the bottom and scatters the rest
+you can collect them but endanger yourself doing so
+
+how to score points/win?
+ kills?
+ bonus points for picking up a tank unless you already scored it?
+
+
+This should be multiplayer for sure, idk if I'll have time
+Should I focus on mobile controls too s that community play can actually have a big game?
+ Big if true...

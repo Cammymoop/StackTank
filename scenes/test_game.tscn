@@ -1,0 +1,68 @@
+[gd_scene load_steps=9 format=3 uid="uid://dwgoggtx2wd71"]
+
+[ext_resource type="Material" uid="uid://b0h6ysaf64rwt" path="res://assets/matterial/dirt.tres" id="1_4vyle"]
+[ext_resource type="PackedScene" uid="uid://osbqrvtld1xf" path="res://scenes/objects/tank.tscn" id="2_d6w8k"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_yfyjw"]
+size = Vector2(20, 20)
+subdivide_width = 2
+subdivide_depth = 2
+orientation = 1
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jf4wa"]
+friction = 0.5
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_7e2ux"]
+data = PackedVector3Array(10, 0, 10, 3.3333, 0, 10, 10, 0, 3.3333, 3.3333, 0, 10, 3.3333, 0, 3.3333, 10, 0, 3.3333, 3.3333, 0, 10, -3.3333, 0, 10, 3.3333, 0, 3.3333, -3.3333, 0, 10, -3.3333, 0, 3.3333, 3.3333, 0, 3.3333, -3.3333, 0, 10, -10, 0, 10, -3.3333, 0, 3.3333, -10, 0, 10, -10, 0, 3.3333, -3.3333, 0, 3.3333, 10, 0, 3.3333, 3.3333, 0, 3.3333, 10, 0, -3.3333, 3.3333, 0, 3.3333, 3.3333, 0, -3.3333, 10, 0, -3.3333, 3.3333, 0, 3.3333, -3.3333, 0, 3.3333, 3.3333, 0, -3.3333, -3.3333, 0, 3.3333, -3.3333, 0, -3.3333, 3.3333, 0, -3.3333, -3.3333, 0, 3.3333, -10, 0, 3.3333, -3.3333, 0, -3.3333, -10, 0, 3.3333, -10, 0, -3.3333, -3.3333, 0, -3.3333, 10, 0, -3.3333, 3.3333, 0, -3.3333, 10, 0, -10, 3.3333, 0, -3.3333, 3.3333, 0, -10, 10, 0, -10, 3.3333, 0, -3.3333, -3.3333, 0, -3.3333, 3.3333, 0, -10, -3.3333, 0, -3.3333, -3.3333, 0, -10, 3.3333, 0, -10, -3.3333, 0, -3.3333, -10, 0, -3.3333, -3.3333, 0, -10, -10, 0, -3.3333, -10, 0, -10, -3.3333, 0, -10)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tv1sq"]
+sky_top_color = Color(0.462745, 0.733333, 0.827451, 1)
+sky_horizon_color = Color(0.665686, 0.725583, 0.740113, 1)
+ground_horizon_color = Color(0.665686, 0.725583, 0.740113, 1)
+sun_curve = 0.0955921
+
+[sub_resource type="Sky" id="Sky_g8flp"]
+sky_material = SubResource("ProceduralSkyMaterial_tv1sq")
+
+[sub_resource type="Environment" id="Environment_yur8d"]
+background_mode = 2
+sky = SubResource("Sky_g8flp")
+tonemap_mode = 2
+
+[node name="Node3D" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_yfyjw")
+surface_material_override/0 = ExtResource("1_4vyle")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+physics_material_override = SubResource("PhysicsMaterial_jf4wa")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_7e2ux")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.864732, -0.296253, 0.405552, 0, 0.807497, 0.589872, -0.502233, -0.510081, 0.698268, 2.57425, 3.87948, 4.43227)
+
+[node name="Stuff" type="Node3D" parent="."]
+
+[node name="SunInSky" type="DirectionalLight3D" parent="Stuff"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+light_color = Color(1, 0.94902, 0.803922, 1)
+light_energy = 2.5
+sky_mode = 2
+
+[node name="Sun" type="DirectionalLight3D" parent="Stuff"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+sky_mode = 1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Stuff"]
+environment = SubResource("Environment_yur8d")
+
+[node name="Tank" parent="." instance=ExtResource("2_d6w8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1875, 0)
+
+[node name="Tank2" parent="." instance=ExtResource("2_d6w8k")]
+transform = Transform3D(-0.135837, 0, 0.990731, 0, 1, 0, -0.990731, 0, -0.135837, 0, 0.1875, -8.43236)
+fodder = true

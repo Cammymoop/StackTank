@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://osbqrvtld1xf"]
+
+[ext_resource type="PackedScene" uid="uid://dd7ftiap83oe4" path="res://scenes/models/tank_model.tscn" id="1_7vrqn"]
+[ext_resource type="Script" path="res://source/tank_controller.gd" id="1_qwdbi"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_vcswn"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kc0su"]
+size = Vector3(1.125, 0.375, 1.5)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_dnpto"]
+height = 0.25
+radius = 0.375
+
+[node name="Tank" type="RigidBody3D"]
+mass = 6.0
+physics_material_override = SubResource("PhysicsMaterial_vcswn")
+lock_rotation = true
+angular_damp = 0.4
+script = ExtResource("1_qwdbi")
+
+[node name="TankModel" parent="." instance=ExtResource("1_7vrqn")]
+
+[node name="BoxCollider" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_kc0su")
+
+[node name="TurretCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("CylinderShape3D_dnpto")

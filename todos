@@ -1,0 +1,92 @@
+
+Required assets:
+ At least one tank *
+  Textures or materials for multiple colors
+
+ Decent Arena Env
+  verticality?
+  low ceiling areas that proclude access to the big dogs?
+  whole arena not visible
+
+ Shot particles/effects
+  w/ dynamic lights?
+
+ shot smoke?
+
+ shot hitting environment sparks?
+
+ Explosion
+
+ "You got some points"
+
+ "Respawning"
+
+ Round end podium scene
+
+ mobile touch control ui
+
+ basic hud
+  maybe just firing cooldown
+
+ particles/materials/texture to indicate damage level
+
+ world env/sky
+
+ lighting
+
+ driving dust
+
+Required systems:
+ Mobile friendly shooter controls!@?!?!?
+  Limited drive + turn radius
+  Slow shots allowing driving to be relatively safe
+  Long shots are not very dangerous
+  stop in place for 1/10th second to fire
+
+  Camera fixed behind tank?
+  slide finger to rotate camera?
+  touchscreen joystick to drive
+
+
+  how to aim/target?
+   auto aim to tank closest to center?
+
+
+ Simple health/power mechanics
+  Low fire rate, 2-6 hits to die
+  Stacking 1 doubles fire rate
+  Stacking more than one uses same staggered fire timing but multiple shots per
+
+ Multiplayer syncing
+  WS server?
+  ptp?
+
+ Game finding/joining interface
+
+ Settings menu
+  server ip config might be necessary
+
+ Vehicle driving/physics
+  Auto-righting?
+  Tipping over causes hats to scatter?
+
+ Juicy firing visuals/sound
+
+ Picking up/swapping to control next when bottom tank gets destroyed/scattering
+
+ I-frames
+
+ Repair pickups?
+
+ AI tanks?
+
+Basic style ideas:
+ low level emission color on everything instead of ambient lighting
+ easy outline
+ sharp sun, not too bright, casts shadows
+  shadows are not too dark because everything emissive
+ very bright dynamic shots with abrupt cutoff and low distance
+ no GI
+ distant shot lights not enabled?
+ distance fog to grey?
+ full brightness emisive shots that aren't effected by dist fog?

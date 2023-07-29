@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3 uid="uid://dd7ftiap83oe4"]
+
+[ext_resource type="Material" uid="uid://vv5oaywbeigj" path="res://assets/matterial/tank_green.tres" id="1_qmf8r"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_qfa2q"]
+size = Vector3(1, 0.25, 1.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_e0piu"]
+size = Vector3(0.25, 0.375, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_35c6k"]
+top_radius = 0.375
+bottom_radius = 0.375
+height = 0.25
+
+[sub_resource type="BoxMesh" id="BoxMesh_klhct"]
+size = Vector3(0.125, 0.125, 1)
+
+[node name="TankModel" type="Node3D"]
+
+[node name="Body" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_qfa2q")
+surface_material_override/0 = ExtResource("1_qmf8r")
+
+[node name="Track" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+mesh = SubResource("BoxMesh_e0piu")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("1_qmf8r")
+
+[node name="Track2" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 0)
+mesh = SubResource("BoxMesh_e0piu")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("1_qmf8r")
+
+[node name="Turret" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+
+[node name="Head" type="MeshInstance3D" parent="Turret"]
+mesh = SubResource("CylinderMesh_35c6k")
+surface_material_override/0 = ExtResource("1_qmf8r")
+
+[node name="Barrel" type="MeshInstance3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+mesh = SubResource("BoxMesh_klhct")
+surface_material_override/0 = ExtResource("1_qmf8r")
