@@ -1,0 +1,97 @@
+[gd_scene load_steps=9 format=3 uid="uid://blgobm746fbv6"]
+
+[ext_resource type="Script" path="res://plugins/touchJoyPad/analog/analog.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://bhf4aftmqc4x6" path="res://plugins/touchJoyPad/analog/small_circle.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://8flfovp3i7fv" path="res://plugins/touchJoyPad/analog/big_circle.png" id="3"]
+
+[sub_resource type="Animation" id="1"]
+length = 5.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="2"]
+step = 1.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(0),
+"update": 0,
+"values": [Color(0, 0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="3"]
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ball:rotation_degrees")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ball:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="4"]
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_j0xy5"]
+_data = {
+"alpha_in": SubResource("1"),
+"alpha_out": SubResource("2"),
+"ball_center": SubResource("3"),
+"default": SubResource("4")
+}
+
+[node name="Analog" type="Node2D"]
+script = ExtResource("1")
+
+[node name="bg" type="Sprite2D" parent="."]
+texture = ExtResource("3")
+
+[node name="ball" type="Sprite2D" parent="."]
+texture = ExtResource("2")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." groups=["JoyStick"]]
+libraries = {
+"": SubResource("AnimationLibrary_j0xy5")
+}

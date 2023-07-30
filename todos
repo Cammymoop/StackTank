@@ -1,9 +1,9 @@
 
 Required assets:
- At least one tank *
+*At least one tank
   Textures or materials for multiple colors
 
- Decent Arena Env
+-Decent Arena Env
   verticality?
   low ceiling areas that proclude access to the big dogs?
   whole arena not visible
@@ -30,20 +30,18 @@ Required assets:
 
  particles/materials/texture to indicate damage level
 
- world env/sky
+*world env/sky
 
  lighting
 
- driving dust
+*driving dust
 
 Required systems:
  Mobile friendly shooter controls!@?!?!?
-  Limited drive + turn radius
   Slow shots allowing driving to be relatively safe
   Long shots are not very dangerous
   stop in place for 1/10th second to fire
 
-  Camera fixed behind tank?
   slide finger to rotate camera?
   touchscreen joystick to drive
 

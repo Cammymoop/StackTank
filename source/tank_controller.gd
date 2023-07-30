@@ -10,6 +10,14 @@ extends RigidBody3D
 
 @export var fodder: = false
 
+@onready var model = $TankModel
+
+@export var alive: = true
+
+@export var aim_factor: = 6.0
+
+var bs = preload("res://scenes/objects/shot.tscn")
+
 const CONST_ACCEL_MUL: = 1
 const CONST_ROTATION_MUL: = 200
 const SPEED_MULT: = 10
@@ -28,14 +36,17 @@ const DUSTY_TIME: = 0.6
 var dusty_timer = 0
 var dusty_toggle: = false
 
+var look_at_me: Node3D = null
+
+var my_camera: Camera3D = null
+
 func _ready():
 	if fodder:
 		pass
-	else:
-		pass#friction_context_velocity_delta = SPEED_MULT * speed * Vector3.BACK
 	
 	if player_controlled:
 		call_deferred("grab_camera")
+		call_deferred("find_lookat")
 
 func grab_camera():
 	var root = get_tree().root.get_child(0)
@@ -43,7 +54,72 @@ func grab_camera():
 	if not cam:
 		print("didnt find cam on " + root.name)
 	else:
+		my_camera = cam.find_child("Camera3D")
 		$CameraDragger.remote_path = $CameraDragger.get_path_to(cam)
+
+func find_lookat():
+	var root = get_tree().root.get_child(0)
+	look_at_me = root.find_child("Tank2")
+	if not is_instance_valid(look_at_me):
+		look_at_me = null
+
+func find_auto_target():
+	print("Target!")
+	if not my_camera:
+		return
+	var tanks = get_all_alive_tanks()
+	var camera_transform = my_camera.global_transform
+	var view_vec: Vector3 = -camera_transform.basis.z
+	
+	var fov = deg_to_rad(my_camera.fov)
+	var dist_to_me = (global_position - my_camera.global_position).length()
+	
+	var max_score: = -1.0
+	var best_tank: Node3D = null
+	for t in tanks:
+		var pos_diff: Vector3 = t.global_position - camera_transform.origin
+		if view_vec.dot(pos_diff.normalized()) < 0:
+			print("bad dot")
+			continue
+		var ang = view_vec.angle_to(pos_diff)
+		if ang > fov/2.0:
+			print("out of fov")
+			continue
+		
+		if not my_camera.is_tank_visible(t):
+			print("ray fail")
+			continue
+		
+		var flattened = (camera_transform.inverse() * t.global_position) * Vector3(1, 0, 1)
+		var h_ang = Vector3.FORWARD.angle_to(flattened)
+		var score = (2 - h_ang) * 2000.0
+		
+		score += max(0, 300 - (global_position - t.global_position).length())
+		
+		score += 100000 if pos_diff.length() >= dist_to_me else 0
+		
+		if score > max_score:
+			best_tank = t
+			max_score = score
+	
+	if best_tank:
+		print("gottem")
+		look_at_me = best_tank
+	else:
+		print("no tank")
+		look_at_me = null
+		
+func hit():
+	pass#die
+
+func get_all_alive_tanks() -> Array:
+	var alives = []
+	for t in get_tree().get_nodes_in_group("TANK"):
+		if t == self:
+			continue
+		if t.alive:
+			alives.append(t)
+	return alives
 
 func dusty_off() -> void:
 	dusty_toggle = false
@@ -65,10 +141,33 @@ func dusty_process(delta) -> void:
 		if not dusty_toggle:
 			$Dusty.emitting = false
 
-func _process(delta):
-	dusty_process(delta)
 
 var framer = 0
+
+func _process(delta):
+	framer = posmod(framer - 1, 5)
+	dusty_process(delta)
+	
+	if look_at_me:
+		model.aim_turret_at(look_at_me.global_position, delta * aim_factor)
+		$Targetter.global_position = look_at_me.global_position
+		$Targetter.visible = true
+	else:
+		$Targetter.visible = false
+		model.aim_turret_at(-model.turret.global_transform.basis.z, delta * aim_factor)
+	
+	if not player_controlled:
+		return
+	
+	if Input.is_action_just_pressed("fire"):
+		var start: Transform3D = model.get_shot_start_xform()
+		var b = bs.instantiate()
+		b.ignore = self
+		get_parent().add_child(b)
+		b.global_transform = Transform3D(start)
+		
+	if framer == 0:
+		find_auto_target()
 
 func _log_num(num):
 	return round(num*100)/100.0
@@ -157,7 +256,6 @@ func _physics_process(delta):
 	
 	friction_context_velocity_delta_l = (-facing) * tread_linear_velocty_l
 	friction_context_velocity_delta_r = (-facing) * tread_linear_velocty_r
-	framer = posmod(framer - 1, 5)
 #	if player_controlled and framer == 0:
 #		#print(round(tread_linear_velocty/10.0)*10)
 #		print(round(tread_static_terrain_diff*10.0)/10.0, ' ', round(linear_velocity.length()*10.0)/10.0)

@@ -1,0 +1,43 @@
+[gd_scene load_steps=7 format=3 uid="uid://c6alev7ofxf77"]
+
+[ext_resource type="Script" path="res://source/shot.gd" id="1_8lmat"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_bi8gk"]
+radial_segments = 12
+rings = 6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_raxf0"]
+shading_mode = 0
+albedo_color = Color(1, 1, 0.521569, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_b6j5s"]
+flip_faces = true
+radial_segments = 12
+rings = 6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c76ye"]
+shading_mode = 0
+albedo_color = Color(0.244752, 0.241146, 9.62615e-08, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_wyl3y"]
+radius = 0.260854
+
+[node name="Shot" type="Node3D"]
+script = ExtResource("1_8lmat")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_bi8gk")
+surface_material_override/0 = SubResource("StandardMaterial3D_raxf0")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
+mesh = SubResource("SphereMesh_b6j5s")
+surface_material_override/0 = SubResource("StandardMaterial3D_c76ye")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_wyl3y")
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

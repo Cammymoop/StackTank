@@ -1,0 +1,47 @@
+[gd_scene load_steps=7 format=3 uid="uid://dbtf3wps884bu"]
+
+[ext_resource type="Script" path="res://scenes/objects/sparker.gd" id="1_02ukj"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0vngg"]
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 6.0
+initial_velocity_max = 6.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yfwaj"]
+shading_mode = 0
+albedo_color = Color(0.176471, 0.176471, 0.176471, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_212bo"]
+material = SubResource("StandardMaterial3D_yfwaj")
+size = Vector3(0.4, 0.4, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_48kct"]
+shading_mode = 0
+albedo_color = Color(0.768627, 0.662745, 0.341176, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_38elv"]
+material = SubResource("StandardMaterial3D_48kct")
+size = Vector3(0.4, 0.4, 0.4)
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_02ukj")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+emitting = false
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_0vngg")
+draw_pass_1 = SubResource("BoxMesh_212bo")
+
+[node name="GPUParticles3D2" type="GPUParticles3D" parent="."]
+emitting = false
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_0vngg")
+draw_pass_1 = SubResource("BoxMesh_38elv")
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

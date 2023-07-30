@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://cgbd5m2ew00id"]
+[gd_scene load_steps=2 format=3 uid="uid://cgbd5m2ew00id"]
+
+[ext_resource type="Texture2D" uid="uid://c3m6gt5taphoo" path="res://assets/img/Screenshot_20230730_114212.png" id="1_okdpo"]
 
 [node name="MenuBG" type="Control"]
 layout_mode = 3
@@ -8,6 +10,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_okdpo")
+stretch_mode = 4
+
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -15,4 +27,4 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.223529, 0.694118, 0.576471, 1)
+color = Color(0.0823529, 0.121569, 0.113725, 0.596078)

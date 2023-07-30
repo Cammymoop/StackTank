@@ -1,12 +1,16 @@
-[gd_scene load_steps=12 format=3 uid="uid://dd7ftiap83oe4"]
+[gd_scene load_steps=14 format=3 uid="uid://dd7ftiap83oe4"]
 
 [ext_resource type="Material" uid="uid://b1en8gknucv5g" path="res://assets/matterial/tank_green_2.tres" id="1_lxm8u"]
 [ext_resource type="Material" uid="uid://vv5oaywbeigj" path="res://assets/matterial/tank_green.tres" id="1_qmf8r"]
+[ext_resource type="Script" path="res://source/tank_model.gd" id="1_um61u"]
 [ext_resource type="Material" uid="uid://dawrc6kj73a5d" path="res://assets/matterial/tank_treads.tres" id="2_338co"]
 [ext_resource type="Material" uid="uid://xwmgiocktls7" path="res://assets/matterial/darkness.tres" id="3_w32fn"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_qfa2q"]
 size = Vector3(1, 0.25, 1.5)
+
+[sub_resource type="PrismMesh" id="PrismMesh_5hbfm"]
+size = Vector3(0.55, 0.3, 0.1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_e0piu"]
 size = Vector3(0.25, 0.375, 1.6)
@@ -29,10 +33,21 @@ size = Vector3(0.2, 0.2, 0.25)
 size = Vector3(0.15, 0.15, 0.2)
 
 [node name="TankModel" type="Node3D"]
+script = ExtResource("1_um61u")
 
 [node name="Body" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_qfa2q")
 surface_material_override/0 = ExtResource("1_lxm8u")
+
+[node name="Arrow" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.1, 0.55)
+mesh = SubResource("PrismMesh_5hbfm")
+surface_material_override/0 = ExtResource("3_w32fn")
+
+[node name="Arrow2" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.1, -0.55)
+mesh = SubResource("PrismMesh_5hbfm")
+surface_material_override/0 = ExtResource("3_w32fn")
 
 [node name="Track" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
@@ -75,3 +90,6 @@ surface_material_override/0 = ExtResource("1_qmf8r")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.928187)
 mesh = SubResource("BoxMesh_bqvi3")
 surface_material_override/0 = ExtResource("3_w32fn")
+
+[node name="ShootFrom" type="Marker3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)

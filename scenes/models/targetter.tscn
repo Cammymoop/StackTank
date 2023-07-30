@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://dxcu3pwneyt62"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_mskil"]
+size = Vector2(0.04, 0.04)
+center_offset = Vector3(0, 0.1, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tkemi"]
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.999866, 0.388107, 0.319881, 1)
+billboard_mode = 1
+fixed_size = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_l6cmp"]
+size = Vector2(0.04, 0.04)
+center_offset = Vector3(-0.1, 0, 0)
+
+[sub_resource type="QuadMesh" id="QuadMesh_nlqy4"]
+size = Vector2(0.04, 0.04)
+center_offset = Vector3(0, -0.1, 0)
+
+[sub_resource type="QuadMesh" id="QuadMesh_yc58o"]
+size = Vector2(0.04, 0.04)
+center_offset = Vector3(0.1, 0, 0)
+
+[node name="Targetter" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_mskil")
+surface_material_override/0 = SubResource("StandardMaterial3D_tkemi")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_l6cmp")
+surface_material_override/0 = SubResource("StandardMaterial3D_tkemi")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_nlqy4")
+surface_material_override/0 = SubResource("StandardMaterial3D_tkemi")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_yc58o")
+surface_material_override/0 = SubResource("StandardMaterial3D_tkemi")
