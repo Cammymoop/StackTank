@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://xwmgiocktls7"]
+
+[resource]
+albedo_color = Color(0.0588235, 0.0588235, 0.0588235, 1)
+emission = Color(0.0605303, 0.0605303, 0.0605303, 1)
+emission_energy_multiplier = 0.4

@@ -1,0 +1,149 @@
+[gd_scene load_steps=18 format=3 uid="uid://wu8x7vp32pit"]
+
+[ext_resource type="Script" path="res://source/game_scene.gd" id="1_om230"]
+[ext_resource type="Script" path="res://source/CameraCenter.gd" id="2_0m5vm"]
+[ext_resource type="PackedScene" uid="uid://osbqrvtld1xf" path="res://scenes/objects/tank.tscn" id="3_3dk58"]
+[ext_resource type="PackedScene" uid="uid://bsewudkbdsll3" path="res://scenes/objects/full_arena.tscn" id="4_45qye"]
+[ext_resource type="Material" uid="uid://b0h6ysaf64rwt" path="res://assets/matterial/dirt.tres" id="4_m2da6"]
+[ext_resource type="PackedScene" uid="uid://cf8nruiamoy0d" path="res://scenes/objects/brick.tscn" id="6_w4uv7"]
+[ext_resource type="PackedScene" uid="uid://buv4v6c861l8o" path="res://scenes/objects/brick2.tscn" id="7_rebu2"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tv1sq"]
+sky_top_color = Color(0.462745, 0.733333, 0.827451, 1)
+sky_horizon_color = Color(0.665686, 0.725583, 0.740113, 1)
+ground_horizon_color = Color(0.665686, 0.725583, 0.740113, 1)
+sun_curve = 0.0955921
+
+[sub_resource type="Sky" id="Sky_g8flp"]
+sky_material = SubResource("ProceduralSkyMaterial_tv1sq")
+
+[sub_resource type="Environment" id="Environment_yur8d"]
+background_mode = 2
+sky = SubResource("Sky_g8flp")
+tonemap_mode = 2
+
+[sub_resource type="Gradient" id="Gradient_wqe2m"]
+colors = PackedColorArray(0.646029, 0.646029, 0.646029, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_3xyja"]
+seed = 485
+frequency = 0.04
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wnltq"]
+seamless = true
+color_ramp = SubResource("Gradient_wqe2m")
+noise = SubResource("FastNoiseLite_3xyja")
+
+[sub_resource type="Gradient" id="Gradient_k2drk"]
+offsets = PackedFloat32Array(0, 0.788618, 0.951219, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.074958, 0.074958, 0.074958, 1, 0.277528, 0.277528, 0.277528, 1, 0.91664, 0.91664, 0.91664, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1aoc4"]
+seed = 485
+frequency = 0.04
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bsjaj"]
+seamless = true
+color_ramp = SubResource("Gradient_k2drk")
+noise = SubResource("FastNoiseLite_1aoc4")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_anji3"]
+albedo_color = Color(0.466667, 0.262745, 0.192157, 1)
+albedo_texture = SubResource("NoiseTexture2D_wnltq")
+emission_enabled = true
+emission = Color(0.47451, 0.270588, 0.137255, 1)
+emission_texture = SubResource("NoiseTexture2D_bsjaj")
+uv1_scale = Vector3(0.3, 0.3, 0.3)
+uv1_triplanar = true
+
+[node name="GameScene" type="Node3D"]
+script = ExtResource("1_om230")
+
+[node name="Stuff" type="Node3D" parent="."]
+
+[node name="SunInSky" type="DirectionalLight3D" parent="Stuff"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+light_color = Color(1, 0.94902, 0.803922, 1)
+light_energy = 2.5
+sky_mode = 2
+
+[node name="Sun" type="DirectionalLight3D" parent="Stuff"]
+transform = Transform3D(-0.866024, -0.340542, 0.366107, 0, 0.732209, 0.68108, -0.500003, 0.589832, -0.63411, 0, 0, 0)
+light_energy = 0.8
+shadow_enabled = true
+sky_mode = 1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Stuff"]
+environment = SubResource("Environment_yur8d")
+
+[node name="CameraCenter" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.46556, 0.630205, 8.44508)
+script = ExtResource("2_0m5vm")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraCenter"]
+transform = Transform3D(0.413104, -0.480052, 0.773883, 0, 0.849782, 0.527134, -0.910684, -0.217761, 0.351049, 0, 0, 0)
+spring_length = 17.0
+margin = 0.03
+
+[node name="Camera3D" type="Camera3D" parent="CameraCenter/SpringArm3D"]
+transform = Transform3D(1, -0.000216216, 0.000812799, 0.000443324, 0.956742, -0.290936, -0.00071466, 0.290937, 0.956742, 0.0327148, 0.0111539, 7.40367)
+current = true
+
+[node name="Tank" parent="." instance=ExtResource("3_3dk58")]
+transform = Transform3D(0.880262, 0, 0.474488, 0, 1, 0, -0.474488, 0, 0.880262, 2.46556, 0.630205, 8.44508)
+player_controlled = true
+
+[node name="Tank2" parent="." instance=ExtResource("3_3dk58")]
+transform = Transform3D(-0.135837, 0, 0.990731, 0, 1, 0, -0.990731, 0, -0.135837, 0, 0.488038, -8.43236)
+
+[node name="full_arena" parent="." instance=ExtResource("4_45qye")]
+
+[node name="Plane" parent="full_arena" index="0"]
+surface_material_override/0 = ExtResource("4_m2da6")
+
+[node name="Plane_002" parent="full_arena" index="2"]
+transform = Transform3D(1.38888, 0, 0, 0, 1, 0, 0, 0, 1, -27.7719, -3.72292, 13.3603)
+surface_material_override/0 = SubResource("StandardMaterial3D_anji3")
+
+[node name="brick" parent="." instance=ExtResource("6_w4uv7")]
+transform = Transform3D(1, 0, 0, 0, 0.998582, 0.0532423, 0, -0.0532423, 0.998582, -26.9127, 6.96833, 0.702364)
+
+[node name="brick2" parent="." instance=ExtResource("6_w4uv7")]
+transform = Transform3D(-0.996493, 8.71162e-08, -0.0836778, -8.74228e-08, -1, 0, -0.0836778, 7.31535e-09, 0.996493, -11.0353, 0.2612, -11.0827)
+
+[node name="brick3" parent="." instance=ExtResource("6_w4uv7")]
+transform = Transform3D(1, 0, 0, 0, 0.369049, 0.92941, 0, -0.92941, 0.369049, -6.03136, 4.53095, 14.8938)
+
+[node name="brick4" parent="." instance=ExtResource("6_w4uv7")]
+transform = Transform3D(0.804925, 0, 0.593377, 0, 1, 0, -0.593377, 0, 0.804925, 19.4869, 40.0768, -16.9977)
+
+[node name="brick5" parent="." instance=ExtResource("6_w4uv7")]
+transform = Transform3D(0.933537, 0, 0.358482, 0, 1, 0, -0.358482, 0, 0.933537, -37.223, 40.0768, 40.979)
+
+[node name="brick6" parent="." instance=ExtResource("6_w4uv7")]
+transform = Transform3D(0.933537, 0, 0.358482, 0, 1, 0, -0.358482, 0, 0.933537, -72.021, 40.0768, 1.27288)
+
+[node name="brick7" parent="." instance=ExtResource("7_rebu2")]
+transform = Transform3D(0.993054, 0.117659, 0, -0.0304523, 0.257021, 0.965926, 0.11365, -0.959217, 0.258819, -0.198002, 3.5021, 3.04379)
+
+[node name="brick8" parent="." instance=ExtResource("7_rebu2")]
+transform = Transform3D(-0.559812, 0.796201, -0.229509, -0.0304523, 0.257021, 0.965926, 0.82806, 0.547726, -0.119638, 5.2504, 3.83234, 8.58389)
+
+[node name="brick9" parent="." instance=ExtResource("7_rebu2")]
+transform = Transform3D(0.986658, 0, 0.162809, 0, 1, 0, -0.162809, 0, 0.986658, -50.4411, 5.51849, 11.7297)
+
+[node name="brick10" parent="." instance=ExtResource("7_rebu2")]
+transform = Transform3D(-0.93262, 0, -0.36086, 0, 1, 0, 0.36086, 0, -0.93262, -51.151, 7.43812, 11.5175)
+
+[node name="brick11" parent="." instance=ExtResource("7_rebu2")]
+transform = Transform3D(-4.37114e-08, 0, 1, 1, -4.37114e-08, 4.37114e-08, 4.37114e-08, 1, 1.91069e-15, -49.1877, 6.50236, -4.20913)
+
+[node name="brick12" parent="." instance=ExtResource("7_rebu2")]
+transform = Transform3D(-4.37114e-08, 0, 1, 1, -4.37114e-08, 4.37114e-08, 4.37114e-08, 1, 1.91069e-15, -39.1857, 6.50236, -4.20913)
+
+[node name="brick13" parent="." instance=ExtResource("7_rebu2")]
+transform = Transform3D(1, 0, 0, 0, 0.975057, 0.221957, 0, -0.221957, 0.975057, -12.6862, 0.119599, -27.1983)
+
+[editable path="full_arena"]

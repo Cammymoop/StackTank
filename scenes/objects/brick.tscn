@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3 uid="uid://cf8nruiamoy0d"]
+
+[ext_resource type="PackedScene" uid="uid://bwmfarx3qxioq" path="res://assets/models/brick.glb" id="1_3hjg0"]
+
+[sub_resource type="Gradient" id="Gradient_rq1xf"]
+offsets = PackedFloat32Array(0, 0.666667, 1)
+colors = PackedColorArray(0.329158, 0.329159, 0.329158, 1, 0.819988, 0.819988, 0.819988, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_mba66"]
+noise_type = 2
+fractal_octaves = 3
+fractal_lacunarity = 3.4
+fractal_gain = 0.6
+cellular_jitter = 0.2
+cellular_return_type = 2
+domain_warp_enabled = true
+domain_warp_type = 2
+domain_warp_amplitude = 21.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rd8nv"]
+invert = true
+seamless = true
+color_ramp = SubResource("Gradient_rq1xf")
+noise = SubResource("FastNoiseLite_mba66")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rtyh5"]
+albedo_color = Color(0.47451, 0.141176, 0.145098, 1)
+albedo_texture = SubResource("NoiseTexture2D_rd8nv")
+uv1_scale = Vector3(0.045, 0.045, 0.045)
+uv1_triplanar = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fi3gi"]
+size = Vector3(7.77475, 3.83927, 15.5387)
+
+[node name="brick" instance=ExtResource("1_3hjg0")]
+
+[node name="Cube" parent="." index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_rtyh5")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Cube" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Cube/StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.178311)
+shape = SubResource("BoxShape3D_fi3gi")

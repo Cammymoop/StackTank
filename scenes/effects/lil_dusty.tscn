@@ -1,0 +1,138 @@
+[gd_scene load_steps=9 format=3 uid="uid://2ye1l0xittkb"]
+
+[sub_resource type="Gradient" id="Gradient_r1rpq"]
+offsets = PackedFloat32Array(0, 0.577236, 1)
+colors = PackedColorArray(1, 1, 1, 0.631373, 1, 1, 1, 0.572549, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_r5bnq"]
+gradient = SubResource("Gradient_r1rpq")
+
+[sub_resource type="Curve" id="Curve_abhas"]
+_data = [Vector2(0, 0.189474), 0.0, 0.0, 0, 0, Vector2(1, 0.6), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_o8sva"]
+curve = SubResource("Curve_abhas")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_2med1"]
+emission_shape = 3
+emission_box_extents = Vector3(0.563, 0, 0.75)
+particle_flag_rotate_y = true
+direction = Vector3(0, 1, 0)
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.1
+initial_velocity_max = 0.6
+angle_min = -90.0
+angle_max = 120.0
+scale_min = 0.6
+scale_max = 1.2
+scale_curve = SubResource("CurveTexture_o8sva")
+color_ramp = SubResource("GradientTexture1D_r5bnq")
+
+[sub_resource type="Shader" id="Shader_000ho"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.1.1.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
+uniform float proximity_fade_distance;
+uniform float point_size : hint_range(0,128);
+uniform float roughness : hint_range(0,1);
+uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
+uniform float specular;
+uniform float metallic;
+uniform sampler2D texture_emission : source_color, hint_default_black,filter_linear_mipmap,repeat_enable;
+uniform vec4 emission : source_color;
+uniform float emission_energy;
+uniform sampler2D depth_texture : hint_depth_texture, repeat_disable, filter_nearest;uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+
+void vertex() {
+	UV=UV*uv1_scale.xy+uv1_offset.xy;
+}
+
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	albedo_tex *= COLOR;
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
+	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+	SPECULAR = specular;
+	vec3 emission_tex = texture(texture_emission,base_uv).rgb;
+	EMISSION = (emission.rgb+emission_tex)*emission_energy;
+	ALPHA *= albedo.a * albedo_tex.a;
+	float depth_tex = textureLod(depth_texture,SCREEN_UV,0.0).r;
+	vec4 world_pos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV*2.0-1.0,depth_tex,1.0);
+	world_pos.xyz/=world_pos.w;
+	ALPHA*=clamp(1.0-smoothstep(world_pos.z+proximity_fade_distance,world_pos.z,VERTEX.z),0.0,1.0);
+	
+    // Fancy dithered alpha stuff
+    float opacity = albedo_tex.a;
+    int x = int(FRAGCOORD.x) % 4;
+    int y = int(FRAGCOORD.y) % 4;
+    int index = x + y * 4;
+    float limit = 0.0;
+
+    if (x < 8) {
+        if (index == 0) limit = 0.0625;
+        if (index == 1) limit = 0.5625;
+        if (index == 2) limit = 0.1875;
+        if (index == 3) limit = 0.6875;
+        if (index == 4) limit = 0.8125;
+        if (index == 5) limit = 0.3125;
+        if (index == 6) limit = 0.9375;
+        if (index == 7) limit = 0.4375;
+        if (index == 8) limit = 0.25;
+        if (index == 9) limit = 0.75;
+        if (index == 10) limit = 0.125;
+        if (index == 11) limit = 0.625;
+        if (index == 12) limit = 1.0;
+        if (index == 13) limit = 0.5;
+        if (index == 14) limit = 0.875;
+        if (index == 15) limit = 0.375;
+    }
+    // Is this pixel below the opacity limit? Skip drawing it
+    if (opacity < limit) {
+        discard;
+	}
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dd7h4"]
+render_priority = 0
+shader = SubResource("Shader_000ho")
+shader_parameter/albedo = Color(0.129412, 0.0784314, 0.0705882, 1)
+shader_parameter/proximity_fade_distance = 1.0
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/emission = Color(0.505841, 0.366152, 0.340848, 1)
+shader_parameter/emission_energy = 0.8
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ixs68"]
+material = SubResource("ShaderMaterial_dd7h4")
+size = Vector3(0.5, 0.5, 0.5)
+
+[node name="LilDusty" type="GPUParticles3D"]
+amount = 12
+lifetime = 0.7
+visibility_aabb = AABB(-5.7144, -5.25147, -6.001, 11.4288, 10.5029, 12.002)
+process_material = SubResource("ParticleProcessMaterial_2med1")
+draw_pass_1 = SubResource("BoxMesh_ixs68")
