@@ -49,7 +49,7 @@ func _ready():
 		call_deferred("find_lookat")
 
 func grab_camera():
-	var root = get_tree().root.get_child(0)
+	var root = get_tree().root.get_node("/root/GameScene")
 	var cam = root.find_child("CameraCenter")
 	if not cam:
 		print("didnt find cam on " + root.name)
@@ -64,7 +64,6 @@ func find_lookat():
 		look_at_me = null
 
 func find_auto_target():
-	print("Target!")
 	if not my_camera:
 		return
 	var tanks = get_all_alive_tanks()
@@ -79,15 +78,12 @@ func find_auto_target():
 	for t in tanks:
 		var pos_diff: Vector3 = t.global_position - camera_transform.origin
 		if view_vec.dot(pos_diff.normalized()) < 0:
-			print("bad dot")
 			continue
 		var ang = view_vec.angle_to(pos_diff)
-		if ang > fov/2.0:
-			print("out of fov")
+		if ang > fov*0.68:
 			continue
 		
 		if not my_camera.is_tank_visible(t):
-			print("ray fail")
 			continue
 		
 		var flattened = (camera_transform.inverse() * t.global_position) * Vector3(1, 0, 1)
@@ -103,13 +99,12 @@ func find_auto_target():
 			max_score = score
 	
 	if best_tank:
-		print("gottem")
 		look_at_me = best_tank
 	else:
-		print("no tank")
 		look_at_me = null
 		
 func hit():
+	apply_torque_impulse(global_transform.basis.y * 200.0 * (round(randf())*2.0 - 1.0))
 	pass#die
 
 func get_all_alive_tanks() -> Array:
@@ -154,20 +149,35 @@ func _process(delta):
 		$Targetter.visible = true
 	else:
 		$Targetter.visible = false
-		model.aim_turret_at(-model.turret.global_transform.basis.z, delta * aim_factor)
+		var look_to = model.turret.global_position - global_transform.basis.z
+		model.aim_turret_at(look_to, delta * aim_factor)
 	
 	if not player_controlled:
 		return
 	
 	if Input.is_action_just_pressed("fire"):
-		var start: Transform3D = model.get_shot_start_xform()
-		var b = bs.instantiate()
-		b.ignore = self
-		get_parent().add_child(b)
-		b.global_transform = Transform3D(start)
+		do_shoot()
+	
 		
 	if framer == 0:
 		find_auto_target()
+
+func do_shoot() -> void:
+	if $ShotCooldown.is_stopped():
+		$ShotCooldown.start()
+	else:
+		return
+	var start: Transform3D = model.get_shot_start_xform()
+	var b: Node3D = bs.instantiate() as Node3D
+	b.ignore = self
+	get_parent().add_child(b)
+	b.global_transform = Transform3D(Basis.IDENTITY, start.origin).looking_at(start.origin - start.basis.z)
+	if look_at_me:
+		var local_p = b.global_transform.inverse() * (look_at_me.global_position + (Vector3.DOWN * 0.2))
+		if local_p.normalized().dot(Vector3.FORWARD) > 0:
+			local_p.x = 0 #No auto aim for left right
+			print(rad_to_deg(Vector3.FORWARD.angle_to(local_p)))
+			b.rotate_x(-Vector3.FORWARD.angle_to(local_p))
 
 func _log_num(num):
 	return round(num*100)/100.0

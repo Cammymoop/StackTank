@@ -1,8 +1,7 @@
-[gd_scene load_steps=21 format=3 uid="uid://wu8x7vp32pit"]
+[gd_scene load_steps=20 format=3 uid="uid://wu8x7vp32pit"]
 
 [ext_resource type="Script" path="res://source/game_scene.gd" id="1_om230"]
 [ext_resource type="Script" path="res://source/CameraCenter.gd" id="2_0m5vm"]
-[ext_resource type="PackedScene" uid="uid://osbqrvtld1xf" path="res://scenes/objects/tank.tscn" id="3_3dk58"]
 [ext_resource type="PackedScene" uid="uid://xaele3quqw8w" path="res://scenes/objects/camera_3d.tscn" id="3_kg6lm"]
 [ext_resource type="PackedScene" uid="uid://bsewudkbdsll3" path="res://scenes/objects/full_arena.tscn" id="4_45qye"]
 [ext_resource type="Material" uid="uid://b0h6ysaf64rwt" path="res://assets/matterial/dirt.tres" id="4_m2da6"]
@@ -95,13 +94,6 @@ margin = 0.03
 transform = Transform3D(0.999999, -0.000216134, 0.000813305, 0.000443324, 0.956742, -0.290937, -0.000714689, 0.290937, 0.956742, 0.0327148, 0.0111537, 7.40367)
 current = true
 
-[node name="Tank" parent="." instance=ExtResource("3_3dk58")]
-transform = Transform3D(0.880262, 0, 0.474488, 0, 1, 0, -0.474488, 0, 0.880262, 2.46556, 0.630205, 8.44508)
-player_controlled = true
-
-[node name="Tank2" parent="." instance=ExtResource("3_3dk58")]
-transform = Transform3D(-0.135837, 0, 0.990731, 0, 1, 0, -0.990731, 0, -0.135837, 1.9564, 1.48424, -10.4571)
-
 [node name="full_arena" parent="." instance=ExtResource("4_45qye")]
 
 [node name="Plane" parent="full_arena" index="0"]
@@ -168,6 +160,7 @@ script = ExtResource("9_tgn0u")
 
 [node name="Control" type="Control" parent="UI"]
 layout_mode = 1
+anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 148.0
@@ -192,5 +185,13 @@ grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 40
 text = "*"
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Marker3D" type="Marker3D" parent="Spawns"]
+transform = Transform3D(0.880262, 0, 0.474488, 0, 1, 0, -0.474488, 0, 0.880262, 2.46556, 0.630205, 8.44508)
+
+[node name="Marker3D2" type="Marker3D" parent="Spawns"]
+transform = Transform3D(-0.135837, 0, 0.990731, 0, 1, 0, -0.990731, 0, -0.135837, 1.9564, 1.48424, -10.4571)
 
 [editable path="full_arena"]

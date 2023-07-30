@@ -44,6 +44,11 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Play"
 
+[node name="MultiplayerButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Multiplayer Connect"
+
 [node name="SettingsButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
@@ -66,4 +71,5 @@ layer = -2
 [node name="MenuBG" parent="BG" instance=ExtResource("1_f5rfa")]
 
 [connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/MultiplayerButton" to="." method="_on_multiplayer_button_pressed"]
 [connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]

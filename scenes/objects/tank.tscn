@@ -75,4 +75,8 @@ update_rotation = false
 [node name="Targetter" parent="." instance=ExtResource("5_pvqva")]
 visible = false
 
+[node name="ShotCooldown" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
 [editable path="TankModel"]
