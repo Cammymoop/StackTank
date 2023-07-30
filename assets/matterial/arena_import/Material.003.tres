@@ -16,7 +16,6 @@ noise = SubResource("FastNoiseLite_8s5k6")
 
 [resource]
 resource_name = "Material.003"
-cull_mode = 2
 vertex_color_use_as_albedo = true
 albedo_color = Color(0.690196, 0.431373, 0.133333, 1)
 albedo_texture = SubResource("NoiseTexture2D_payuj")

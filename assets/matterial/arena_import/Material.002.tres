@@ -16,7 +16,6 @@ noise = SubResource("FastNoiseLite_ojg5m")
 
 [resource]
 resource_name = "Material.002"
-cull_mode = 2
 vertex_color_use_as_albedo = true
 albedo_color = Color(0, 0, 0, 1)
 emission_enabled = true

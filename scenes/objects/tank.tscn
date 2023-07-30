@@ -24,7 +24,7 @@ radius = 0.188
 [node name="Tank" type="RigidBody3D"]
 collision_layer = 2
 collision_mask = 3
-mass = 50.0
+mass = 45.0
 physics_material_override = SubResource("PhysicsMaterial_vcswn")
 angular_damp = 0.4
 script = ExtResource("1_qwdbi")

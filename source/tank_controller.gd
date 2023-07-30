@@ -99,8 +99,9 @@ func _physics_process(delta):
 		var drive_amount = y
 		if abs(fposmod(Vector2(x, y).angle(), PI) - PI/2) < PI/3.9:
 			try_moving = true
-			var turn_factor_l = 0 if x < 0 else 1.0 + (x * 0.5)
-			var turn_factor_r = 0 if x > 0 else 1.0 - (x * 0.5)
+			var x_scaledown = 0.34
+			var turn_factor_l = 0 if x < 0 else 1.0 + (x * x_scaledown)
+			var turn_factor_r = 0 if x > 0 else 1.0 - (x * x_scaledown)
 			
 			left_move = drive_amount * turn_factor_l
 			right_move = drive_amount * turn_factor_r

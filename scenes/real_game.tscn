@@ -20,6 +20,7 @@ sky_material = SubResource("ProceduralSkyMaterial_tv1sq")
 [sub_resource type="Environment" id="Environment_yur8d"]
 background_mode = 2
 sky = SubResource("Sky_g8flp")
+ambient_light_source = 1
 tonemap_mode = 2
 
 [sub_resource type="Gradient" id="Gradient_wqe2m"]
@@ -70,7 +71,7 @@ light_energy = 2.5
 sky_mode = 2
 
 [node name="Sun" type="DirectionalLight3D" parent="Stuff"]
-transform = Transform3D(-0.866024, -0.340542, 0.366107, 0, 0.732209, 0.68108, -0.500003, 0.589832, -0.63411, 0, 0, 0)
+transform = Transform3D(-0.866024, -0.340542, 0.366106, 0, 0.732209, 0.68108, -0.500003, 0.589832, -0.63411, 0, 0, 0)
 light_energy = 0.8
 shadow_enabled = true
 sky_mode = 1
@@ -84,7 +85,7 @@ script = ExtResource("2_0m5vm")
 
 [node name="SpringArm3D" type="SpringArm3D" parent="CameraCenter"]
 transform = Transform3D(0.413104, -0.480052, 0.773883, 0, 0.849782, 0.527134, -0.910684, -0.217761, 0.351049, 0, 0, 0)
-spring_length = 17.0
+spring_length = 13.0
 margin = 0.03
 
 [node name="Camera3D" type="Camera3D" parent="CameraCenter/SpringArm3D"]
@@ -104,7 +105,7 @@ transform = Transform3D(-0.135837, 0, 0.990731, 0, 1, 0, -0.990731, 0, -0.135837
 surface_material_override/0 = ExtResource("4_m2da6")
 
 [node name="Plane_002" parent="full_arena" index="2"]
-transform = Transform3D(1.38888, 0, 0, 0, 1, 0, 0, 0, 1, -27.7719, -3.72292, 13.3603)
+transform = Transform3D(1.57267, 0, 0, 0, 1, 0, 0, 0, 1, -28.9734, -3.72292, 13.3603)
 surface_material_override/0 = SubResource("StandardMaterial3D_anji3")
 
 [node name="brick" parent="." instance=ExtResource("6_w4uv7")]
@@ -145,5 +146,11 @@ transform = Transform3D(-4.37114e-08, 0, 1, 1, -4.37114e-08, 4.37114e-08, 4.3711
 
 [node name="brick13" parent="." instance=ExtResource("7_rebu2")]
 transform = Transform3D(1, 0, 0, 0, 0.975057, 0.221957, 0, -0.221957, 0.975057, -12.6862, 0.119599, -27.1983)
+
+[node name="brick14" parent="." instance=ExtResource("7_rebu2")]
+transform = Transform3D(0.524996, 0, 0.851104, 0, 1, 0, -0.851104, 0, 0.524996, 25.4267, -10.148, 4.85948)
+
+[node name="brick15" parent="." instance=ExtResource("7_rebu2")]
+transform = Transform3D(0.376835, -0.696264, 0.610911, 0.365536, 0.717786, 0.592593, -0.851104, 0, 0.524996, 41.2845, -9.08558, 3.86945)
 
 [editable path="full_arena"]
