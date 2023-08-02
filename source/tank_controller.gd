@@ -16,6 +16,13 @@ extends RigidBody3D
 
 @export var aim_factor: = 6.0
 
+@export var owner_id: = -1 :
+	set(_own):
+		owner_id = _own
+		$Synchronizer.set_multiplayer_authority(owner_id)
+
+var my_mp_id: = "eh"
+
 var bs = preload("res://scenes/objects/shot.tscn")
 
 const CONST_ACCEL_MUL: = 1
@@ -26,6 +33,7 @@ const BRAKE_LERP: = 20.0
 const MIN_BRAKE_EFFECT: = 500.0
 const MAX_TURN_VELOCITY: = PI
 const MAX_MOVING_TURN_VELOCITY: = MAX_TURN_VELOCITY/2
+const MAX_SERVER_CANNON_DELTA: = 1.0
 
 var tread_linear_velocty_l: = 0.0
 var tread_linear_velocty_r: = 0.0
@@ -40,13 +48,50 @@ var look_at_me: Node3D = null
 
 var my_camera: Camera3D = null
 
+@onready var shot_node: Node3D = get_node("../ShotsFired")
+
 func _ready():
 	if fodder:
 		pass
 	
+	if Global.multiplayer_on:
+		my_mp_id = str(get_tree().get_multiplayer().get_unique_id()).substr(0, 5)
+		if not Global.i_am_server:
+			print(my_mp_id, ', tank spawned: ', owner_id)
+			print('Owner: %s' % get_multiplayer_authority())
+		if owner_id == get_tree().get_multiplayer().get_unique_id():
+			player_controlled = true
+	
 	if player_controlled:
 		call_deferred("grab_camera")
 		call_deferred("find_lookat")
+		call_deferred("grab_control")
+
+func owner_rpc(method: String):
+	if not has_method(method):
+		return
+	
+	if player_controlled:
+		call(method)
+	
+	print('%s, calling %s on its owner' % [my_mp_id, method])
+	# hard to get rpc configuration, just assume we can call it
+	rpc_id(owner_id, method)
+
+func last_caller() -> int:
+	return get_tree().get_multiplayer().get_remote_sender_id()
+
+func grab_control() -> void:
+	print('%s, sending rpc...' % my_mp_id)
+	rpc("set_control", get_tree().get_multiplayer().get_unique_id())
+
+@rpc("any_peer", "call_local", "reliable")
+func set_control(network_id: int) -> void:
+	# Spawn Syncronizer needs to keep it's existing authority
+	var sp_authority: = $SpawnSyncronizer.get_multiplayer_authority()
+	print('%s, id %s is asking for control of tank %s' % [my_mp_id, network_id, owner_id])
+	set_multiplayer_authority(network_id)
+	$SpawnSyncronizer.set_multiplayer_authority(sp_authority)
 
 func grab_camera():
 	var root = get_tree().root.get_node("/root/GameScene")
@@ -102,8 +147,16 @@ func find_auto_target():
 		look_at_me = best_tank
 	else:
 		look_at_me = null
-		
+
+@rpc("any_peer")
 func hit():
+	if Global.multiplayer_on and last_caller() != 1:
+		print("someone (%s) trying to hit me :<" % last_caller())
+		return
+	_hit()
+
+func _hit():
+	print("got hit!")
 	apply_torque_impulse(global_transform.basis.y * 200.0 * (round(randf())*2.0 - 1.0))
 	pass#die
 
@@ -156,22 +209,38 @@ func _process(delta):
 		return
 	
 	if Input.is_action_just_pressed("fire"):
-		do_shoot()
+		var start: Transform3D = model.get_shot_start_xform()
+		if Global.multiplayer_on:
+			rpc("do_shoot", start)
+		else:
+			do_shoot(start)
 	
 		
 	if framer == 0:
 		find_auto_target()
 
-func do_shoot() -> void:
+@rpc("authority", "reliable")
+func do_shoot(at_transform) -> void:
+	if Global.multiplayer_on and not Global.i_am_server:
+		return
+	
 	if $ShotCooldown.is_stopped():
 		$ShotCooldown.start()
 	else:
 		return
-	var start: Transform3D = model.get_shot_start_xform()
+	
 	var b: Node3D = bs.instantiate() as Node3D
-	b.ignore = self
-	get_parent().add_child(b)
-	b.global_transform = Transform3D(Basis.IDENTITY, start.origin).looking_at(start.origin - start.basis.z)
+	b.has_auth = true
+	if Global.multiplayer_on:
+		var authority_xform: Transform3D = model.get_shot_start_xform()
+		if authority_xform.origin.distance_to(at_transform.origin) > MAX_SERVER_CANNON_DELTA:
+			at_transform = authority_xform
+		
+		b.name = Global.get_bullet_name()
+	b.ignore = get_path()
+	
+	shot_node.add_child(b)
+	b.global_transform = Transform3D(Basis.IDENTITY, at_transform.origin).looking_at(at_transform.origin - at_transform.basis.z)
 	if look_at_me:
 		var local_p = b.global_transform.inverse() * (look_at_me.global_position + (Vector3.DOWN * 0.2))
 		if local_p.normalized().dot(Vector3.FORWARD) > 0:
@@ -199,7 +268,6 @@ func _physics_process(delta):
 	var right_move: = 0.0
 
 	if player_controlled:
-		var try_moving: = false
 		#driving = Input.get_axis("back", "forward")
 		#steering = Input.get_axis("right", "left")
 		var x = Input.get_axis("left", "right")
@@ -207,15 +275,13 @@ func _physics_process(delta):
 		
 		var drive_amount = y
 		if abs(fposmod(Vector2(x, y).angle(), PI) - PI/2) < PI/3.9:
-			try_moving = true
 			var x_scaledown = 0.34
-			var turn_factor_l = 0 if x < 0 else 1.0 + (x * x_scaledown)
-			var turn_factor_r = 0 if x > 0 else 1.0 - (x * x_scaledown)
+			var turn_factor_l = 0.0 if x < 0.0 else 1.0 + (x * x_scaledown)
+			var turn_factor_r = 0.0 if x > 0.0 else 1.0 - (x * x_scaledown)
 			
 			left_move = drive_amount * turn_factor_l
 			right_move = drive_amount * turn_factor_r
 		else:
-			try_moving = false
 			drive_amount = x
 			
 			left_move = drive_amount

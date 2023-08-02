@@ -20,6 +20,10 @@ config/icon="res://icon.png"
 
 Global="*res://global.gd"
 
+[global]
+
+AllowServer=true
+
 [input]
 
 go_up={
@@ -112,6 +116,16 @@ fire={
 , Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":5,"axis_value":1.0,"script":null)
 ]
 }
+look_right={
+"deadzone": 0.5,
+"events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":2,"axis_value":1.0,"script":null)
+]
+}
+look_left={
+"deadzone": 0.5,
+"events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":2,"axis_value":-1.0,"script":null)
+]
+}
 
 [physics]
 
@@ -120,4 +134,5 @@ fire={
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 anti_aliasing/quality/screen_space_aa=1

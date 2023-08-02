@@ -194,4 +194,19 @@ transform = Transform3D(0.880262, 0, 0.474488, 0, 1, 0, -0.474488, 0, 0.880262, 
 [node name="Marker3D2" type="Marker3D" parent="Spawns"]
 transform = Transform3D(-0.135837, 0, 0.990731, 0, 1, 0, -0.990731, 0, -0.135837, 1.9564, 1.48424, -10.4571)
 
+[node name="Marker3D3" type="Marker3D" parent="Spawns"]
+transform = Transform3D(0.588293, 0.0526487, -0.806932, 0, 0.997878, 0.0651071, 0.808647, -0.0383021, 0.587045, -26.6439, 9.15335, 1.13563)
+
+[node name="Players" type="Node3D" parent="."]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="Players"]
+_spawnable_scenes = PackedStringArray("res://scenes/objects/tank.tscn")
+spawn_path = NodePath("..")
+
+[node name="ShotsFired" type="Node3D" parent="Players"]
+
+[node name="ShotSpawner" type="MultiplayerSpawner" parent="Players/ShotsFired"]
+_spawnable_scenes = PackedStringArray("res://scenes/objects/shot.tscn")
+spawn_path = NodePath("..")
+
 [editable path="full_arena"]

@@ -1,6 +1,7 @@
 extends Node3D
 
 var tank_scn = preload("res://scenes/objects/tank.tscn")
+var shot_scn = preload("res://scenes/objects/shot.tscn")
 
 var in_mp: = false
 var connected: = false
@@ -15,11 +16,14 @@ func _ready():
 		print("wrong mult?")
 		return
 	
-	if OS.has_feature("Server"):
-		#print("server game scene")
+	if Global.i_am_server:
+		in_mp = true
+		RenderingServer.render_loop_enabled = false
 		var peer: = ENetMultiplayerPeer.new()
 		peer.create_server(8080)
 		get_tree().get_multiplayer().multiplayer_peer = peer
+		
+		mult.connect("peer_connected", on_client_join)
 	else:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		
@@ -31,7 +35,7 @@ func _ready():
 			my_peer_id = mult.get_unique_id()
 			in_mp = true
 			
-			mult.connect("connected_to_server", self_spawn, CONNECT_ONE_SHOT)
+			#mult.connect("connected_to_server", self_spawn, CONNECT_ONE_SHOT)
 			mult.connect("connection_failed", no_connect)
 			mult.connect("peer_connected", new_peer)
 			#mult.network_peer_connected.connect(_player_connected)
@@ -55,12 +59,12 @@ func self_spawn() -> void:
 	tank.player_controlled = true
 	if in_mp:
 		tank.set_multiplayer_authority(my_peer_id)
-	add_child(tank)
+	$Players.add_child(tank)
 	
 	if not in_mp:
 		var tank2: RigidBody3D = tank_scn.instantiate()
 		tank2.transform = Transform3D($Spawns.get_child(1).global_transform)
-		add_child(tank2)
+		$Players.add_child(tank2)
 
 func new_peer(id) -> void:
 	if my_peer_id == id:
@@ -69,7 +73,13 @@ func new_peer(id) -> void:
 	elif id == 1:
 		print("that's the server")
 		return
-	add_player_tank(id)
+	# TODO anounce spawn and receive spawn announcement
+	#add_player_tank(id)
+
+func on_client_join(peer_id) -> void:
+	add_player_tank(peer_id)
+
+var spawn_coutner: = 0
 
 func add_player_tank(peer_id):
 	if not in_mp:
@@ -81,10 +91,14 @@ func add_player_tank(peer_id):
 	
 	var tank: RigidBody3D = tank_scn.instantiate()
 	tank.transform = Transform3D(at.global_transform)
-	tank.set_multiplayer_authority(peer_id)
-	add_child(tank)
+	#tank.set_multiplayer_authority(peer_id)
+	tank.owner_id = peer_id
+	tank.name = "Tank_" + str(spawn_coutner) + "_" + str(peer_id)
+	$Players.add_child(tank)
+	
+	spawn_coutner += 1
 
-func _process(delta):
+func _process(_delta):
 	if Input.is_action_just_pressed("esc"):
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

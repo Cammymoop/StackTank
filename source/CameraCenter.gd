@@ -3,15 +3,18 @@ extends Node3D
 var accumulated_mouse_move: = 0.0
 
 var mouse_sensitivity = 0.5
+var controller_sensitivity = 20.0
 const PIXEL_SPIN: float = 200
 const SPIN_RADIANS = PI/2
 
-func _process(_delta):
+func _process(delta):
 	var spin: = 0.0
 	
 	if accumulated_mouse_move:
 		spin = -(accumulated_mouse_move / PIXEL_SPIN) * mouse_sensitivity
 		accumulated_mouse_move = 0.0
+	
+	spin += Input.get_axis("look_right", "look_left") * controller_sensitivity * delta
 	
 	if spin != 0:
 		rotate_object_local(Vector3.UP, spin * SPIN_RADIANS)

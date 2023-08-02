@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://osbqrvtld1xf"]
+[gd_scene load_steps=13 format=3 uid="uid://osbqrvtld1xf"]
 
 [ext_resource type="PackedScene" uid="uid://dd7ftiap83oe4" path="res://scenes/models/tank_model.tscn" id="1_7vrqn"]
 [ext_resource type="Script" path="res://source/tank_controller.gd" id="1_qwdbi"]
@@ -21,6 +21,34 @@ size = Vector3(0.25, 0.375, 1.3)
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_74swn"]
 height = 0.25
 radius = 0.188
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_j2r7r"]
+properties/0/path = NodePath(".:owner_id")
+properties/0/spawn = true
+properties/0/sync = false
+properties/0/watch = false
+properties/1/path = NodePath(".:position")
+properties/1/spawn = true
+properties/1/sync = false
+properties/1/watch = false
+properties/2/path = NodePath(".:rotation")
+properties/2/spawn = true
+properties/2/sync = false
+properties/2/watch = false
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_y8ruw"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = false
+properties/0/sync = true
+properties/0/watch = false
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = false
+properties/1/sync = true
+properties/1/watch = false
+properties/2/path = NodePath("TankModel/Turret:rotation")
+properties/2/spawn = true
+properties/2/sync = true
+properties/2/watch = false
 
 [node name="Tank" type="RigidBody3D" groups=["TANK"]]
 collision_layer = 2
@@ -78,5 +106,11 @@ visible = false
 [node name="ShotCooldown" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
+
+[node name="SpawnSyncronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_j2r7r")
+
+[node name="Synchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_y8ruw")
 
 [editable path="TankModel"]
